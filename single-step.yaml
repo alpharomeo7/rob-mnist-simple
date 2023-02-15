@@ -1,0 +1,53 @@
+workflow:
+    files:
+        inputs:
+        - 'code/'
+        - 'data/'
+        outputs:
+        - 'results/results.json'
+        - 'results/analyze.log'
+        - 'results/evaluate.log'
+        - 'results/preproc.log'
+    steps:
+        - name: 'single-step'
+          files:
+            inputs:
+            - 'code/'
+            - 'data/'
+            outputs:
+            - 'model/'
+            - 'results'
+          action: 
+            environment: 'tensorflow/tensorflow:latest'
+            commands:
+            - 'python3 code/mnist_simple.py'
+       
+outputs:
+    - source: 'results/results.json'
+      title: 'Results'
+      caption: 'Top-tagger evaluation results.'
+      format:
+          type: 'json'
+    - source: 'results/yProbBest.pkl'
+    - source: 'results/analyze.log'
+    - source: 'results/evaluate.log'
+    - source: 'results/preproc.log'
+
+
+results:
+    file: 'results/results.json'
+    schema:
+        - name: 'loss'
+          label: 'TBD'
+          dtype: 'float'
+        - name: 'accuracy'
+          label: 'Accuracy of model'
+          dtype: 'float'
+        - name: 'num_params'
+          label: 'Number of parameters'
+          dtype: 'float'
+    orderBy:
+        - name: 'accuracy'
+          sortDesc: true
+        - name: 'loss'
+          sortDesc: false
