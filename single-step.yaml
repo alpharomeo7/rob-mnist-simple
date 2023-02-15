@@ -16,7 +16,7 @@ workflow:
             - 'data/'
             outputs:
             - 'model/'
-            - 'results'
+            - 'results/'
           action: 
             environment: 'tensorflow/tensorflow:latest'
             commands:
