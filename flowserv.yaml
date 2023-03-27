@@ -1,0 +1,7 @@
+name: 'MNist Simple'
+description: 'MNist Simple Demo for ROB'
+instructions: 'instructions.md'
+files:
+    - source: 'code'
+      target: 'code'
+specfile: 'benchmark.yaml'

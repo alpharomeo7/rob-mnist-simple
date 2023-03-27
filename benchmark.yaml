@@ -1,0 +1,65 @@
+workflow:
+    files:
+        inputs:
+        - "code/scorer.py"
+        outputs:"data/ground_truth.txt"
+        - "results/predictions.txt"
+        - "results/score.json"
+    parameters:
+        tagger: $[[model]]
+    steps:
+    - name: "download_data"
+      files:
+        outputs:
+        - "data/x_test.np"
+        - "data/x_test.np"
+        - "data/ground_truth.txt"
+      action:
+          environment: "ubuntu:latest"
+          commands:
+          - wget ...
+          - unzip ...
+    - name: "mnist_predict"
+      files:
+        inputs:
+        - "data/x_test.np"
+        - "data/x_test.np"
+        outputs:
+        - "results/predictions.txt"
+      action: $[[model]]
+    - name: "score_result"
+      files:
+        inputs:
+        - "code/scorer.py"
+        - "data/ground_truth.txt"
+        - "results/predictions.txt"
+        outputs:
+        - "results/score.json"
+      action:
+          environment: "python:3.7"
+          commands:
+          - ${python} code/scorer.py
+              --predictions=results/predictions.txt
+              --ground_truth=data/ground_truth.txt
+              --outputfile=results/score.json
+outputs:
+    - source: 'results/score.json'
+      title: 'Results'
+      caption: 'Model prediction evaluation.'
+      format:
+          type: 'json'
+    - source: 'results/predictions.txt'
+parameters:
+    - name: 'model'
+      label: 'Trained MNIST Model Container'
+      dtype: 'actor'
+      index: 0
+results:
+    file: 'results/results.json'
+    schema:
+        - name: 'accuracy'
+          label: 'Accuracy of model'
+          dtype: 'float'
+    orderBy:
+        - name: 'accuracy'
+          sortDesc: true
